@@ -79,6 +79,7 @@ show_help()
     echo
     echo "ARGUMENTS:"
     echo "  -ex value, --example value  set example param with value"
+    echo "  -ex2 value, --example2 value  set example param with value"
     echo "  -h,  --help                 show user commands"
     echo "  -sb, --set-boolean          set example boolean param"
     echo "  -v,  --version              show credentials"
