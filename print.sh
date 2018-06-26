@@ -4,7 +4,7 @@ set -e
 
 # Credentials
 SCRIPT_AUTHOR="John Novak"
-SCRIPT_VERSION=1.0
+SCRIPT_VERSION=1.1
 SCRIPT_DATE=1.1.1970
 SCRIPT_NAME=$(echo ${0##*/})
 
@@ -12,13 +12,15 @@ SCRIPT_NAME=$(echo ${0##*/})
 color_RED=$(tput setaf 1)
 color_GREEN=$(tput setaf 2)
 color_YELLOW=$(tput setaf 3)
-color_BLUE=$(tput setaf 4)
 color_MAGENTA=$(tput setaf 5)
 color_CYAN=$(tput setaf 6)
 color_RESET=$(tput sgr0)
 
 # Debug logs. Not covered by log filtering. Enabled via LOG_DEBUG flag
 LOG_DEBUG=true
+
+# Use simple logging (without decorators)
+USE_SIMPLE_LOGS=false
 
 # Define logging level
 # 0 - no logs
@@ -36,7 +38,7 @@ script_main_function()
     print_ok  "AWESOOOME! Seems legit"
     print_warning "I feel sick..."
     print_info "Let me sing a song of my people"
-    print_debug "It not working yet"
+    print_debug "It is not working yet"
 
 }
 
@@ -45,7 +47,11 @@ print_error()
 {
     local message=${@:?[${FUNCNAME[0]}] Must provide any string}
     if (( (5 >= $LOG_LEVEL) && (1 <= $LOG_LEVEL) )); then
-        echo "${color_RED}[ERRO]${color_RESET} ${message}"
+        if [[ false = $USE_SIMPLE_LOGS ]]; then
+            echo "${color_RED}[ERRO]${color_RESET} ${message}"
+        else
+            echo "[ERRO] ${message}"
+        fi
     fi
 }
 
@@ -53,7 +59,11 @@ print_ok()
 {
     local message=${@:?[${FUNCNAME[0]}] Must provide any string}
     if (( (5 >= $LOG_LEVEL) && (2 <= $LOG_LEVEL) )); then
-        echo "${color_GREEN}[GOOD]${color_RESET} ${message}"
+        if [[ false = $USE_SIMPLE_LOGS ]]; then
+            echo "${color_GREEN}[GOOD]${color_RESET} ${message}"
+        else
+            echo "[GOOD] ${message}"
+        fi
     fi
 }
 
@@ -61,7 +71,11 @@ print_warning()
 {
     local message=${@:?[${FUNCNAME[0]}] Must provide any string}
     if (( (5 >= $LOG_LEVEL) && (3 <= $LOG_LEVEL) )); then
-        echo "${color_YELLOW}[WARN]${color_RESET} ${message}"
+        if [[ false = $USE_SIMPLE_LOGS ]]; then
+            echo "${color_YELLOW}[WARN]${color_RESET} ${message}"
+        else
+            echo "[WARN] ${message}"
+        fi
     fi
 }
 
@@ -69,7 +83,11 @@ print_info()
 {
     local message=${@:?[${FUNCNAME[0]}] Must provide any string}
     if (( (5 >= $LOG_LEVEL) && (4 <= $LOG_LEVEL) )); then
-        echo "${color_CYAN}[INFO]${color_RESET} ${message}"
+        if [[ false = $USE_SIMPLE_LOGS ]]; then
+            echo "${color_CYAN}[INFO]${color_RESET} ${message}"
+        else
+        echo "[INFO] ${message}"
+        fi
     fi
 }
 
@@ -84,8 +102,12 @@ print()
 print_debug()
 {
     local message=${@:?${FUNCNAME[0]} Must provide any string}
-    if ((true == $LOG_DEBUG)); then
-        echo "${color_MAGENTA}[DEBG]${color_RESET} ${message}"
+    if [[ true = $LOG_DEBUG ]]; then
+        if [[ false = $USE_SIMPLE_LOGS ]]; then
+            echo "${color_MAGENTA}[DEBG]${color_RESET} ${message}"
+        else
+            echo "[DEBG] ${message}"
+        fi
     fi
 }
 
